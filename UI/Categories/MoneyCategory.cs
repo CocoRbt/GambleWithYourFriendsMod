@@ -30,12 +30,12 @@ public sealed class MoneyCategory : IMenuCategory
         GUILayout.Space(8);
         if (GUILayout.Button("Appliquer le montant maintenant"))
         {
-            Plugin.Log.LogInfo($"[Money] Définir solde à {_state.MoneyAmountToSet} — patch à venir.");
+            Plugin.Logger.LogInfo($"[Money] Définir solde à {_state.MoneyAmountToSet} — patch à venir.");
         }
 
         if (GUILayout.Button("Ajouter 10 000"))
         {
-            Plugin.Log.LogInfo("[Money] +10 000 — patch à venir.");
+            Plugin.Logger.LogInfo("[Money] +10 000 — patch à venir.");
         }
     }
 }

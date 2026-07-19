@@ -32,7 +32,7 @@ public sealed class PlayerCategory : IMenuCategory
 
         if (GUILayout.Button("Téléporter au spawn"))
         {
-            Plugin.Log.LogInfo("[Player] Téléportation spawn — patch à venir.");
+            Plugin.Logger.LogInfo("[Player] Téléportation spawn — patch à venir.");
         }
     }
 }

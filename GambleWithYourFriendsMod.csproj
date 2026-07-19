@@ -1,56 +1,50 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-  <TargetFramework>net472</TargetFramework>
-  <AssemblyName>GambleWithYourFriendsMod</AssemblyName>
-  <Description>Mod menu BepInEx pour Gamble With Your Friends</Description>
-  <Version>0.1.0</Version>
-  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  <LangVersion>latest</LangVersion>
-  <RestoreAdditionalProjectSources>
-    https://nuget.bepinex.dev/v3/index.json
-  </RestoreAdditionalProjectSources>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>GambleWithYourFriendsMod</AssemblyName>
+    <Description>Mod menu BepInEx pour Gamble With Your Friends</Description>
+    <Version>0.1.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>GambleWithYourFriendsMod</RootNamespace>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
   </PropertyGroup>
 
   <!--
-    IMPORTANT : définir GAME_DIR avant la compilation.
-    Exemple PowerShell :
-      $env:GAME_DIR = "C:\Program Files (x86)\Steam\steamapps\common\Gamble With Your Friends"
-    Exemple bash :
-      export GAME_DIR="/path/to/Gamble With Your Friends"
+    PowerShell :
+      $env:GAME_DIR = "E:\SteamLibrary\steamapps\common\Gamble With Your Friends"
   -->
   <PropertyGroup Condition="'$(GAME_DIR)' != ''">
     <GameDir>$(GAME_DIR)</GameDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(GAME_DIR)' == ''">
-    <GameDir>$(MSBuildThisFileDirectory)..\GameRefs</GameDir>
+    <GameDir>$(MSBuildThisFileDirectory)GameRefs</GameDir>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
-    <PackageReference Include="BepInEx.Unity.IL2CPP" Version="5.4.21" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
-    <PackageReference Include="HarmonyX" Version="2.*" />
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" IncludeAssets="compile" />
   </ItemGroup>
 
-  <!-- Références vers les assemblies du jeu (à ajuster après dump / inspection) -->
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <!-- Assembly-CSharp du jeu (après installation BepInEx Mono) -->
   <ItemGroup>
-    <Reference Include="Assembly-CSharp" Condition="Exists('$(GameDir)\BepInEx\interop\Assembly-CSharp.dll')">
-      <HintPath>$(GameDir)\BepInEx\interop\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp" Condition="Exists('$(GameDir)\Gamble With Your Friends_Data\Managed\Assembly-CSharp.dll')">
+      <HintPath>$(GameDir)\Gamble With Your Friends_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(GameDir)\BepInEx\unity-libs\UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>$(GameDir)\BepInEx\unity-libs\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>$(GameDir)\BepInEx\unity-libs\UnityEngine.InputLegacyModule.dll</HintPath>
+    <Reference Include="Assembly-CSharp" Condition="Exists('$(GameDir)\Managed\Assembly-CSharp.dll')">
+      <HintPath>$(GameDir)\Managed\Assembly-CSharp.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

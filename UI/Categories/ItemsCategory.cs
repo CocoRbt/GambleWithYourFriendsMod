@@ -24,7 +24,7 @@ public sealed class ItemsCategory : IMenuCategory
 
         if (GUILayout.Button($"Spawn {_state.ChipSpawnAmount} jetons casino"))
         {
-            Plugin.Log.LogInfo($"[Items] Spawn {_state.ChipSpawnAmount} jetons — patch à venir.");
+            Plugin.Logger.LogInfo($"[Items] Spawn {_state.ChipSpawnAmount} jetons — patch à venir.");
         }
 
         GUILayout.Space(12);
@@ -33,7 +33,7 @@ public sealed class ItemsCategory : IMenuCategory
 
         if (GUILayout.Button("Spawn item par ID"))
         {
-            Plugin.Log.LogInfo($"[Items] Spawn item '{_state.ItemSpawnId}' — patch à venir.");
+            Plugin.Logger.LogInfo($"[Items] Spawn item '{_state.ItemSpawnId}' — patch à venir.");
         }
     }
 }

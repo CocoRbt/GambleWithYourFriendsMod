@@ -12,16 +12,8 @@ namespace GambleWithYourFriendsMod.UI;
 /// </summary>
 public class ModMenuBehaviour : MonoBehaviour
 {
-    /// <summary>Enregistrement IL2CPP requis pour les types custom MonoBehaviour.</summary>
-    static ModMenuBehaviour()
-    {
-        Il2CppInterop.Runtime.Injection.ClassInjector.RegisterTypeInIl2Cpp<ModMenuBehaviour>();
-    }
-
-    public ModMenuBehaviour(IntPtr ptr) : base(ptr) { }
-
-    private ModConfig _config = null!;
-    private ModState _state = null!;
+    private ModConfig _config;
+    private ModState _state;
     private IMenuCategory[] _categories = Array.Empty<IMenuCategory>();
     private int _selectedCategoryIndex;
     private bool _menuVisible;
@@ -75,7 +67,6 @@ public class ModMenuBehaviour : MonoBehaviour
 
     /// <summary>
     /// Effets appliqués chaque frame (vitesse du jeu, etc.).
-    /// Les patches Harmony gèrent le reste.
     /// </summary>
     private void ApplyRuntimeEffects()
     {
@@ -96,16 +87,13 @@ public class ModMenuBehaviour : MonoBehaviour
         MenuStyles.EnsureInitialized();
 
         _windowRect = GUI.Window(
-            unchecked((int)0x47575946), // ID fenêtre unique "GWYF"
+            unchecked((int)0x47575946),
             _windowRect,
             DrawMenuWindow,
-            "🎰 Gamble With Your Friends — Mod Menu",
+            "Gamble With Your Friends — Mod Menu",
             MenuStyles.Window);
     }
 
-    /// <summary>
-    /// Contenu principal de la fenêtre : header, onglets, zone scrollable.
-    /// </summary>
     private void DrawMenuWindow(int windowId)
     {
         GUILayout.BeginVertical();
@@ -121,15 +109,12 @@ public class ModMenuBehaviour : MonoBehaviour
         GUILayout.EndScrollView();
 
         GUILayout.Space(4);
-        GUILayout.Label($"F8/Insert : menu | F9 : save | F10 : load", MenuStyles.Footer);
+        GUILayout.Label("F8/Insert : menu | F9 : save | F10 : load", MenuStyles.Footer);
 
         GUILayout.EndVertical();
         GUI.DragWindow(new Rect(0, 0, 10000, 24));
     }
 
-    /// <summary>
-    /// Barre d'onglets horizontale pour naviguer entre les catégories.
-    /// </summary>
     private void DrawCategoryTabs()
     {
         GUILayout.BeginHorizontal();

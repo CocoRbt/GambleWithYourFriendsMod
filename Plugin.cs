@@ -1,7 +1,6 @@
 using System;
 using BepInEx;
 using BepInEx.Logging;
-using BepInEx.Unity.IL2CPP;
 using GambleWithYourFriendsMod.Configuration;
 using GambleWithYourFriendsMod.Core;
 using GambleWithYourFriendsMod.Patches;
@@ -12,41 +11,40 @@ using UnityEngine;
 namespace GambleWithYourFriendsMod;
 
 /// <summary>
-/// Point d'entrée principal du mod BepInEx.
-/// Charge la configuration, applique les patches Harmony et affiche le menu.
+/// Point d'entrée principal du mod — BepInEx 5 (Unity Mono).
 /// </summary>
 [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-public class Plugin : BasePlugin
+public class Plugin : BaseUnityPlugin
 {
     public const string PluginGuid = "com.modder.gamblewithyourfriends";
     public const string PluginName = "Gamble With Your Friends Mod Menu";
     public const string PluginVersion = "0.1.0";
 
-    internal static new ManualLogSource Log { get; private set; } = null!;
-    internal static ModConfig Config { get; private set; } = null!;
+    internal static new ManualLogSource Logger { get; private set; } = null!;
+    /// <summary>Config du mod (ne pas confondre avec base.Config = fichier BepInEx).</summary>
+    internal static ModConfig ModSettings { get; private set; } = null!;
     internal static ModState State { get; private set; } = null!;
     internal static Harmony Harmony { get; private set; } = null!;
 
-    private ModMenuBehaviour? _menuBehaviour;
+    private ModMenuBehaviour _menuBehaviour;
 
-    public override void Load()
+    private void Awake()
     {
-        Log = base.Log;
-        Config = ModConfig.Load(Config);
+        Logger = base.Logger;
+        ModSettings = ModConfig.Load(Config);
         State = ModState.Instance;
         Harmony = new Harmony(PluginGuid);
 
-        Log.LogInfo($"{PluginName} v{PluginVersion} — chargement...");
+        Logger.LogInfo($"{PluginName} v{PluginVersion} — chargement...");
 
         ApplyHarmonyPatches();
         RegisterMenuBehaviour();
 
-        Log.LogInfo($"Menu : touche {Config.MenuToggleKey.Value} | Catégories : {ModMenu.CategoryCount}");
+        Logger.LogInfo($"Menu : touche {ModSettings.MenuToggleKey.Value} | Catégories : {ModMenuBehaviour.CategoryCount}");
     }
 
     /// <summary>
-    /// Applique tous les patches Harmony définis dans le namespace Patches.
-    /// Les patches sont des stubs pour l'instant — à compléter après reverse du jeu.
+    /// Applique les patches Harmony (stubs pour l'instant).
     /// </summary>
     private void ApplyHarmonyPatches()
     {
@@ -54,32 +52,29 @@ public class Plugin : BasePlugin
         {
             Harmony.PatchAll(typeof(MoneyPatches));
             Harmony.PatchAll(typeof(RngPatches));
-            Log.LogInfo("Patches Harmony appliqués.");
+            Logger.LogInfo("Patches Harmony appliqués.");
         }
         catch (Exception ex)
         {
-            Log.LogError($"Échec des patches Harmony : {ex}");
+            Logger.LogError($"Échec des patches Harmony : {ex}");
         }
     }
 
     /// <summary>
-    /// Crée un GameObject persistant qui gère l'affichage OnGUI du menu.
+    /// Crée un GameObject persistant pour le menu OnGUI.
     /// </summary>
     private void RegisterMenuBehaviour()
     {
         var menuObject = new GameObject("GWYF_ModMenu");
-        UnityEngine.Object.DontDestroyOnLoad(menuObject);
+        DontDestroyOnLoad(menuObject);
         _menuBehaviour = menuObject.AddComponent<ModMenuBehaviour>();
-        _menuBehaviour.Initialize(Config, State);
+        _menuBehaviour.Initialize(ModSettings, State);
     }
 
-    /// <summary>
-    /// Sauvegarde la configuration à la fermeture du jeu.
-    /// </summary>
     private void OnDestroy()
     {
-        Config.Save();
+        ModSettings?.Save();
         Harmony?.UnpatchSelf();
-        Log.LogInfo("Mod déchargé, configuration sauvegardée.");
+        Logger.LogInfo("Mod déchargé, configuration sauvegardée.");
     }
 }

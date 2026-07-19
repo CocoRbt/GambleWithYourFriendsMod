@@ -27,19 +27,19 @@ public sealed class MiscCategory : IMenuCategory
         if (GUILayout.Button("Sauvegarder la configuration"))
         {
             _config.SaveFromState(_state);
-            Plugin.Log.LogInfo("[Misc] Configuration sauvegardée.");
+            Plugin.Logger.LogInfo("[Misc] Configuration sauvegardée.");
         }
 
         if (GUILayout.Button("Charger la configuration"))
         {
             _config.ApplyToState(_state);
-            Plugin.Log.LogInfo("[Misc] Configuration chargée.");
+            Plugin.Logger.LogInfo("[Misc] Configuration chargée.");
         }
 
         if (GUILayout.Button("Réinitialiser toutes les options"))
         {
             _state.ResetToDefaults();
-            Plugin.Log.LogInfo("[Misc] État réinitialisé.");
+            Plugin.Logger.LogInfo("[Misc] État réinitialisé.");
         }
 
         GUILayout.Space(12);
